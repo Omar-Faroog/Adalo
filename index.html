@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copy & Paste Buttons</title>
+    <title>Adalo in Iframe</title>
     <style>
         body, html {
             margin: 0;
@@ -37,7 +37,6 @@
             min-height: 50px;
         }
 
-        /* ضبط iframe ليملأ الشاشة أسفل الأزرار */
         iframe {
             flex-grow: 1;
             width: 100%;
@@ -58,11 +57,24 @@
 <iframe id="adaloFrame" src="https://www.adalo.com"></iframe>
 
 <script>
+    // منع انتقال الروابط خارج الـ iframe
+    document.getElementById('adaloFrame').addEventListener('load', function() {
+        const iframe = document.getElementById('adaloFrame').contentWindow;
+
+        try {
+            // إعادة تعيين الروابط داخل iframe (قد لا يعمل على جميع المواقع)
+            iframe.document.querySelectorAll('a').forEach(link => {
+                link.setAttribute('target', '_self');  // اجعل الروابط تبقى داخل الـ iframe
+            });
+        } catch (e) {
+            console.warn('Unable to access iframe content:', e);
+        }
+    });
+
     // نسخ النص المحدد يدوياً
-    document.getElementById( copyButton ).addEventListener( click , function() {
-        let selectedText = window.getSelection().toString();  // جلب النص المحدد
+    document.getElementById('copyButton').addEventListener('click', function() {
+        let selectedText = window.getSelection().toString();
         if (selectedText) {
-            // إنشاء عنصر مؤقت لنسخ النص المحدد
             var tempInput = document.createElement("textarea");
             tempInput.style.position = "absolute";
             tempInput.style.left = "-1000px";
@@ -79,12 +91,12 @@
     });
 
     // لصق النص
-    document.getElementById( pasteButton ).addEventListener( click , async function() {
+    document.getElementById('pasteButton').addEventListener('click', async function() {
         try {
             const text = await navigator.clipboard.readText();
-            document.getElementById( output ).innerText = text || "Nothing to paste!";
+            document.getElementById('output').innerText = text || "Nothing to paste!";
         } catch (err) {
-            alert( Failed to read clipboard contents:   + err);
+            alert('Failed to read clipboard contents: ' + err);
         }
     });
 </script>
