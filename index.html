@@ -41,6 +41,7 @@
             flex-grow: 1;
             width: 100%;
             border: none;
+            min-height: 500px; /* ضبط الارتفاع حسب الحاجة */
         }
     </style>
 </head>
@@ -54,23 +55,9 @@
 </div>
 
 <!-- iframe لفتح موقع Adalo داخل نفس الصفحة -->
-<iframe id="adaloFrame" src="https://www.adalo.com"></iframe>
+<iframe id="adaloFrame" src="https://www.adalo.com" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
 
 <script>
-    // منع انتقال الروابط خارج الـ iframe
-    document.getElementById('adaloFrame').addEventListener('load', function() {
-        const iframe = document.getElementById('adaloFrame').contentWindow;
-
-        try {
-            // إعادة تعيين الروابط داخل iframe (قد لا يعمل على جميع المواقع)
-            iframe.document.querySelectorAll('a').forEach(link => {
-                link.setAttribute('target', '_self');  // اجعل الروابط تبقى داخل الـ iframe
-            });
-        } catch (e) {
-            console.warn('Unable to access iframe content:', e);
-        }
-    });
-
     // نسخ النص المحدد يدوياً
     document.getElementById('copyButton').addEventListener('click', function() {
         let selectedText = window.getSelection().toString();
