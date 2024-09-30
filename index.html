@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy & Paste Buttons</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #controls {
+            padding: 10px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        #copyButton, #pasteButton {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+        }
+
+        /* ضبط iframe ليملأ الشاشة أسفل الأزرار */
+        iframe {
+            flex-grow: 1;
+            width: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- عناصر التحكم -->
+<div id="controls">
+    <button id="copyButton">Copy (Ctrl + C)</button>
+    <button id="pasteButton">Paste (Ctrl + V)</button>
+    <div id="output">Paste here</div>
+</div>
+
+<!-- iframe لفتح موقع Adalo داخل نفس الصفحة -->
+<iframe id="adaloFrame" src="https://www.adalo.com"></iframe>
+
+<script>
+    // نسخ النص المحدد يدوياً
+    document.getElementById( copyButton ).addEventListener( click , function() {
+        let selectedText = window.getSelection().toString();  // جلب النص المحدد
+        if (selectedText) {
+            // إنشاء عنصر مؤقت لنسخ النص المحدد
+            var tempInput = document.createElement("textarea");
+            tempInput.style.position = "absolute";
+            tempInput.style.left = "-1000px";
+            tempInput.value = selectedText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            alert("Text copied: " + selectedText);
+        } else {
+            alert("Please select some text to copy.");
+        }
+    });
+
+    // لصق النص
+    document.getElementById( pasteButton ).addEventListener( click , async function() {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById( output ).innerText = text || "Nothing to paste!";
+        } catch (err) {
+            alert( Failed to read clipboard contents:   + err);
+        }
+    });
+</script>
+
+</body>
+</html>
